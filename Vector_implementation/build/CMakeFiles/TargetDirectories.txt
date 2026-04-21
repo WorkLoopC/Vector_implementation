@@ -1,0 +1,4 @@
+/home/jkozel/Vector_implementation/build/CMakeFiles/Vector_implementation.dir
+/home/jkozel/Vector_implementation/build/CMakeFiles/run.dir
+/home/jkozel/Vector_implementation/build/CMakeFiles/edit_cache.dir
+/home/jkozel/Vector_implementation/build/CMakeFiles/rebuild_cache.dir
