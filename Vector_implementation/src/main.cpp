@@ -3,38 +3,53 @@
 #include <vector>
 template <typename T> class Vector_c {
 private:
-    T* begin;
-    T* back;
-    T* end;
+    T* m_begin;
+    T* m_back;
+    T* m_cap;
 public:
-    Vector_c() : begin{ nullptr }, back{ nullptr }, end{ nullptr } {}
+    Vector_c() : m_begin{ nullptr }, m_back{ nullptr }, m_cap{ nullptr } {}
     ~Vector_c() = default;
-    size_t size() const { return back - begin; }
-    size_t capacity() const { return end - begin; }
+    size_t size() const { return m_back - m_begin; }
+
+    size_t capacity() const { return m_cap - m_begin; }
+
+    size_t begin() const { return *m_begin; }
+
+    //size_t back() const { return; }
 
     void grow() {
         size_t old_size = size();
         size_t new_capacity = 0;
         if (capacity() == 0) new_capacity = 1;
-        else capacity() * 2;
-        T* data = new T[size];
-        for (int i = 0; i < new_capacity; i++) {
-            data[i] = begin[i];
+        else new_capacity = capacity() * 2;
+        T* data = new T[new_capacity];
+        for (int i = 0; i < old_size; i++) {
+            data[i] = m_begin[i];
         }
-        delete[] begin;
-        begin = data;
-        back = (new_capacity - 1) + begin;
-        end = new_capacity + begin;
+        delete[] m_begin;
+        m_begin = data;                 //0x55555556b2b0
+        m_back = m_begin + old_size;
+        m_cap = m_begin + new_capacity;
     }
 
-    void push(const T& value) {
-        if (back == end) {
+    void push_back(const T& value) {
+        if (m_back == m_cap) {
             grow();
+            *m_back = value;
         }
-
+        *m_back = value;
+        ++m_back;
     }
 };
 
 int main() {
     Vector_c<int> vec;
+    vec.push_back(11);
+    vec.push_back(22);
+    vec.push_back(33);
+    std::cout << "begin: " << vec.begin() << "\n";
+    std::cout << "size: " << vec.size() << "\n";
+    std::cout << "back: " << vec.back() << "\n";
+    std::cout << "capacity: " << vec.capacity() << "\n";
+
 }
