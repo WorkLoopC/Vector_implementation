@@ -1,15 +1,33 @@
 #include <iostream>
 #include <memory.h>
 #include <vector>
-template <typename T> class Vector_c {
+#include <algorithm>
+#include <limits>
+template <typename T>
+class Vector_c {
 private:
     T* m_begin;
     T* m_back;
     T* m_cap;
 public:
+
+    class iterator {
+    private:
+        T* m_ptr;
+    public:
+        iterator(T* data) : m_ptr{ data } {}
+        T& operator*() { return *m_ptr; }
+        iterator& operator++() {
+            m_ptr++;
+            return *this;
+        }
+        bool operator!=(const iterator& other_value) { return m_ptr != other_value.m_ptr; }
+        bool operator==(const iterator& other_value) { return m_ptr == other_value.m_ptr; }
+    };
+
     Vector_c() : m_begin{ nullptr }, m_back{ nullptr }, m_cap{ nullptr } {}
     ~Vector_c() = default;
-
+    T& operator[](size_t i) { return *(m_begin + i); }
     //Element access
     const T at(size_t index) const { return *(m_begin + index); }
 
@@ -20,19 +38,29 @@ public:
     const T* data() const { return m_begin; }
 
     //Iterators
-    T* begin() const {
+    const iterator begin() const { return iterator(m_begin); }
 
-    }
-
-    T* end() const {
-
-    }
+    const iterator end() const { return iterator(m_back - 1); }
 
     //Capacity
-    //empty size max_size reserve capacity shrink_to_fit
     size_t size() const { return m_back - m_begin; }
 
     size_t capacity() const { return m_cap - m_begin; }
+
+    bool empty() const {
+        if (size() == 0) {
+            return true;
+        }
+        else return false;
+    }
+
+    size_t max_size() const { return std::numeric_limits<size_t>::max() / sizeof(T); }
+
+    void reserve(size_t new_cap) {
+        if (new_cap > capacity()) {
+            m_cap += new_cap;
+        }
+    }
 
     //Modifiers
     void push_back(const T& value) {
@@ -43,10 +71,14 @@ public:
         ++m_back;
     }
 
-    void pop_back() {
+    void pop_back() const {
         if (size() > 0) {
             --m_back;
         }
+    }
+
+    void shrink_to_fit() const {
+
     }
 
     //Spare functions
@@ -68,22 +100,11 @@ public:
 };
 
 int main() {
-    /*
-    Vector_c<int> vec;
-    vec.push_back(11);
-    vec.push_back(22);
-    vec.push_back(33);
-    */
     Vector_c<std::string> vec;
     vec.push_back("one");
-    vec.push_back("two");
-
+    vec.push_back("two");/*
     std::cout << "front: " << vec.front() << "\n";
     std::cout << "back: " << vec.back() << "\n";
-    std::cout << "size: " << vec.size() << "\n";
-    std::cout << "capacity: " << vec.capacity() << "\n";
-    std::cout << "at: " << vec.at(1) << "\n";
-    std::cout << "data: " << vec.data() << "\n";
-    vec.pop_back();
-    std::cout << "back: " << vec.back() << "\n";
+    std::cout << "size: " << vec.size() << "\n";*/
+    std::cout << "max_size " << vec.max_size();
 }
